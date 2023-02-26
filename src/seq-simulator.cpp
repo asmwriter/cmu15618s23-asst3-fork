@@ -13,6 +13,12 @@ const int QuadTreeLeafSize = 8;
 class SequentialNBodySimulator : public INBodySimulator {
 public:
 
+  std::unique_ptr<QuadTreeNode> createQuadTreeNode(std::vector<Particle> &particles){
+    std::unique_ptr<QuadTreeNode> QNode = std::make_unique<QuadTreeNode>();
+    QNode->particles = particles;
+    return QNode;
+  }
+
   void helper(std::unique_ptr<QuadTreeNode> parentNode, std::vector<Particle> &particles, Vec2 bmin, Vec2 bmax){
     std::cout<<"QuadTreeLeafSize = "<< QuadTreeLeafSize <<", particles size = "<<particles.size()<<std::endl;
     std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
@@ -58,13 +64,13 @@ public:
               botRightQ.push_back(particle);
         }
       }
-      std::unique_ptr<QuadTreeNode> topLeftNode     = createQuadTreeNode(topLeftQ, topLeftBmin, topLeftBmax);
+      std::unique_ptr<QuadTreeNode> topLeftNode     = createQuadTreeNode(topLeftQ);
       helper(topLeftNode, topLeftQ, topLeftBmin, topLeftBmax);
-      std::unique_ptr<QuadTreeNode> topRightNode    = createQuadTreeNode(topRightQ, topRightBmin, topRightBmax);
+      std::unique_ptr<QuadTreeNode> topRightNode    = createQuadTreeNode(topRightQ);
       helper(topRightNode, topRightQ, topRightBmin, topRightBmax);
-      std::unique_ptr<QuadTreeNode> bottomLeftNode  = createQuadTreeNode(botLeftQ, botLeftBmin, botLeftBmax);
+      std::unique_ptr<QuadTreeNode> bottomLeftNode  = createQuadTreeNode(botLeftQ);
       helper(bottomLeftNode, botLeftQ, botLeftBmin, botLeftBmax);
-      std::unique_ptr<QuadTreeNode> bottomRightNode = createQuadTreeNode(botRightQ, botRightBmin, botRightBmax);
+      std::unique_ptr<QuadTreeNode> bottomRightNode = createQuadTreeNode(botRightQ);
       helper(bottomRightNode, botRightQ, botRightBmin, botRightBmax);
     }
   }
@@ -74,7 +80,7 @@ public:
     // TODO: implement a function that builds and returns a quadtree containing
     // particles.
     auto root = std::make_unique<QuadTreeNode>();
-    root.particles.push_back(particles);
+    root->particles.push_back(particles);
 
     return root;
   }
