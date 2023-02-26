@@ -19,7 +19,7 @@ public:
     return QNode;
   }
 
-  void helper(std::unique_ptr<QuadTreeNode> parentNode, std::vector<Particle> &particles, Vec2 bmin, Vec2 bmax){
+  void helper(std::unique_ptr<QuadTreeNode>& parentNode, std::vector<Particle> &particles, Vec2 bmin, Vec2 bmax){
     std::cout<<"QuadTreeLeafSize = "<< QuadTreeLeafSize <<", particles size = "<<particles.size()<<std::endl;
     std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
     std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
@@ -47,31 +47,39 @@ public:
       std::vector<Particle> topLeftQ, topRightQ, botLeftQ, botRightQ;
       for(auto &particle: particles){
 
-        if(particle.x > topLeftBmin.x && particle.x < topLeftBmax.x &&
-             particle.y > topLeftBmin.y && particle.y < topLeftBmax.y){
+        if(particle.position.x > topLeftBmin.x && particle.position.x < topLeftBmax.x &&
+             particle.position.y > topLeftBmin.y && particle.position.y < topLeftBmax.y){
               topLeftQ.push_back(particle);
         }
-        if(particle.x > topRightBmin.x && particle.x < topRightBmax.x &&
-             particle.y > topRightBmin.y && particle.y < topRightBmax.y){
+        if(particle.position.x > topRightBmin.x && particle.position.x < topRightBmax.x &&
+             particle.position.y > topRightBmin.y && particle.position.y < topRightBmax.y){
               topRightQ.push_back(particle);
         }
-        if(particle.x > botLeftBmin.x && particle.x < botLeftBmax.x &&
-             particle.y > botLeftBmin.y && particle.y < botLeftBmax.y){
+        if(particle.position.x > botLeftBmin.x && particle.position.x < botLeftBmax.x &&
+             particle.position.y > botLeftBmin.y && particle.position.y < botLeftBmax.y){
               botLeftQ.push_back(particle);
         }
-        if(particle.x > botRightBmin.x && particle.x < botRightBmax.x &&
-             particle.y > botRightBmin.y && particle.y < botRightBmax.y){
+        if(particle.position.x > botRightBmin.x && particle.position.x < botRightBmax.x &&
+             particle.position.y > botRightBmin.y && particle.position.y < botRightBmax.y){
               botRightQ.push_back(particle);
         }
       }
-      std::unique_ptr<QuadTreeNode> topLeftNode     = createQuadTreeNode(topLeftQ);
-      helper(topLeftNode, topLeftQ, topLeftBmin, topLeftBmax);
-      std::unique_ptr<QuadTreeNode> topRightNode    = createQuadTreeNode(topRightQ);
-      helper(topRightNode, topRightQ, topRightBmin, topRightBmax);
-      std::unique_ptr<QuadTreeNode> bottomLeftNode  = createQuadTreeNode(botLeftQ);
-      helper(bottomLeftNode, botLeftQ, botLeftBmin, botLeftBmax);
-      std::unique_ptr<QuadTreeNode> bottomRightNode = createQuadTreeNode(botRightQ);
-      helper(bottomRightNode, botRightQ, botRightBmin, botRightBmax);
+      
+      parentNode->children[0] =  std::make_unique<QuadTreeNode>(); 
+      parentNode->children[0]->particles = botRightQ;
+      helper(parentNode->children[0], topLeftQ, topLeftBmin, topLeftBmax);
+      
+      parentNode->children[1] =  std::make_unique<QuadTreeNode>(); 
+      parentNode->children[1]->particles = botRightQ;
+      helper(parentNode->children[1], topRightQ, topRightBmin, topRightBmax);
+     
+      parentNode->children[2] =  std::make_unique<QuadTreeNode>(); 
+      parentNode->children[2]->particles = botRightQ;
+      helper(parentNode->children[2], botLeftQ, botLeftBmin, botLeftBmax);
+    
+      parentNode->children[3] =  std::make_unique<QuadTreeNode>(); 
+      parentNode->children[3]->particles = botRightQ;
+      helper(parentNode->children[3], botRightQ, botRightBmin, botRightBmax);
     }
   }
 
@@ -80,7 +88,7 @@ public:
     // TODO: implement a function that builds and returns a quadtree containing
     // particles.
     auto root = std::make_unique<QuadTreeNode>();
-    root->particles.push_back(particles);
+    root->particles.insert(root->particles.end(), particles.begin(), particles.end());
 
     return root;
   }
