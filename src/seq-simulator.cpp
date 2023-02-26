@@ -34,6 +34,7 @@ public:
       parentNode->isLeaf = 0;
       //Insert children nodes
       Vec2 pivot = (bmin + bmax) * 0.5f;
+      std::cout<<"pivot X: "<<pivot.x<<", Y: "<<pivot.y<<std::endl;
       Vec2 size = (bmax - bmin) * 0.5f;
 
       Vec2 topLeftBmin = Vec2(bmin.x, pivot.y);
