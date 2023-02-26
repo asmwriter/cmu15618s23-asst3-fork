@@ -47,21 +47,25 @@ public:
 
       std::vector<Particle> topLeftQ, topRightQ, botLeftQ, botRightQ;
       for(auto &particle: particles){
-
+        std::cout<<"particle-x:"<<particle.position.x<<",y:"<<particle.position.y<<std::endl;
         if(particle.position.x > topLeftBmin.x && particle.position.x < topLeftBmax.x &&
              particle.position.y > topLeftBmin.y && particle.position.y < topLeftBmax.y){
+              std::cout<<"top left"<<std::endl;
               topLeftQ.push_back(particle);
         }
         if(particle.position.x > topRightBmin.x && particle.position.x < topRightBmax.x &&
              particle.position.y > topRightBmin.y && particle.position.y < topRightBmax.y){
+              std::cout<<"top right"<<std::endl;
               topRightQ.push_back(particle);
         }
         if(particle.position.x > botLeftBmin.x && particle.position.x < botLeftBmax.x &&
              particle.position.y > botLeftBmin.y && particle.position.y < botLeftBmax.y){
+              std::cout<<"bottom left"<<std::endl;
               botLeftQ.push_back(particle);
         }
         if(particle.position.x > botRightBmin.x && particle.position.x < botRightBmax.x &&
              particle.position.y > botRightBmin.y && particle.position.y < botRightBmax.y){
+              std::cout<<"bottom right"<<std::endl;
               botRightQ.push_back(particle);
         }
       }
