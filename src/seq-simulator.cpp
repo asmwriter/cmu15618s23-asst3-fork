@@ -71,25 +71,25 @@ public:
         }
       }
 
-      parentNode->children[0] =  std::make_unique<QuadTreeNode>(); 
-      parentNode->children[0]->particles = topLeftQ;
-      std::cout<<"Recursing into topLeft:"<<std::endl;
-      helper(parentNode->children[0], topLeftQ, topLeftBmin, topLeftBmax, level+1);
-      
-      parentNode->children[1] =  std::make_unique<QuadTreeNode>(); 
-      parentNode->children[1]->particles = topRightQ;
-      std::cout<<"Recursing into topRight:"<<std::endl;
-      helper(parentNode->children[1], topRightQ, topRightBmin, topRightBmax, level+1);
-     
       parentNode->children[2] =  std::make_unique<QuadTreeNode>(); 
-      parentNode->children[2]->particles = botLeftQ;
-      std::cout<<"Recursing into botLeft:"<<std::endl;
-      helper(parentNode->children[2], botLeftQ, botLeftBmin, botLeftBmax, level+1);
-    
+      parentNode->children[2]->particles = topLeftQ;
+      std::cout<<"Recursing into topLeft:"<<std::endl;
+      helper(parentNode->children[2], topLeftQ, topLeftBmin, topLeftBmax, level+1);
+      
       parentNode->children[3] =  std::make_unique<QuadTreeNode>(); 
-      parentNode->children[3]->particles = botRightQ;
+      parentNode->children[3]->particles = topRightQ;
+      std::cout<<"Recursing into topRight:"<<std::endl;
+      helper(parentNode->children[3], topRightQ, topRightBmin, topRightBmax, level+1);
+     
+      parentNode->children[0] =  std::make_unique<QuadTreeNode>(); 
+      parentNode->children[0]->particles = botLeftQ;
+      std::cout<<"Recursing into botLeft:"<<std::endl;
+      helper(parentNode->children[0], botLeftQ, botLeftBmin, botLeftBmax, level+1);
+    
+      parentNode->children[1] =  std::make_unique<QuadTreeNode>(); 
+      parentNode->children[1]->particles = botRightQ;
       std::cout<<"Recursing into botRight:"<<std::endl;
-      helper(parentNode->children[3], botRightQ, botRightBmin, botRightBmax, level+1);
+      helper(parentNode->children[1], botRightQ, botRightBmin, botRightBmax, level+1);
     }
   }
 
