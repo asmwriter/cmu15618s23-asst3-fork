@@ -19,7 +19,8 @@ public:
     return QNode;
   }
 
-  void helper(std::unique_ptr<QuadTreeNode>& parentNode, std::vector<Particle> &particles, Vec2 bmin, Vec2 bmax){
+  void helper(std::unique_ptr<QuadTreeNode>& parentNode, std::vector<Particle> &particles, Vec2 bmin, Vec2 bmax, int level){
+    std::cout<<"Level:"<<level<<std::endl;
     std::cout<<"QuadTreeLeafSize = "<< QuadTreeLeafSize <<", particles size = "<<particles.size()<<std::endl;
     std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
     std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
@@ -67,19 +68,20 @@ public:
 
       parentNode->children[0] =  std::make_unique<QuadTreeNode>(); 
       parentNode->children[0]->particles = botRightQ;
-      helper(parentNode->children[0], topLeftQ, topLeftBmin, topLeftBmax);
+      std::cout<<"Recursing into topLeft:"<<std::endl;
+      helper(parentNode->children[0], topLeftQ, topLeftBmin, topLeftBmax, level+1);
       
       parentNode->children[1] =  std::make_unique<QuadTreeNode>(); 
       parentNode->children[1]->particles = botRightQ;
-      helper(parentNode->children[1], topRightQ, topRightBmin, topRightBmax);
+      helper(parentNode->children[1], topRightQ, topRightBmin, topRightBmax, level+1);
      
       parentNode->children[2] =  std::make_unique<QuadTreeNode>(); 
       parentNode->children[2]->particles = botRightQ;
-      helper(parentNode->children[2], botLeftQ, botLeftBmin, botLeftBmax);
+      helper(parentNode->children[2], botLeftQ, botLeftBmin, botLeftBmax, level+1);
     
       parentNode->children[3] =  std::make_unique<QuadTreeNode>(); 
       parentNode->children[3]->particles = botRightQ;
-      helper(parentNode->children[3], botRightQ, botRightBmin, botRightBmax);
+      helper(parentNode->children[3], botRightQ, botRightBmin, botRightBmax, level+1);
     }
   }
 
@@ -89,7 +91,8 @@ public:
     // particles.
     auto root = std::make_unique<QuadTreeNode>();
     root->particles.insert(root->particles.end(), particles.begin(), particles.end());
-    helper(root, root->particles, bmin, bmax);
+    auto level = 0;
+    helper(root, root->particles, bmin, bmax, level);
     return root;
   }
   virtual std::unique_ptr<AccelerationStructure>
