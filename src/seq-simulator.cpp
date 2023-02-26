@@ -64,7 +64,7 @@ public:
               botRightQ.push_back(particle);
         }
       }
-      
+
       parentNode->children[0] =  std::make_unique<QuadTreeNode>(); 
       parentNode->children[0]->particles = botRightQ;
       helper(parentNode->children[0], topLeftQ, topLeftBmin, topLeftBmax);
@@ -89,7 +89,7 @@ public:
     // particles.
     auto root = std::make_unique<QuadTreeNode>();
     root->particles.insert(root->particles.end(), particles.begin(), particles.end());
-
+    helper(root, root->particles, bmin, bmax);
     return root;
   }
   virtual std::unique_ptr<AccelerationStructure>
