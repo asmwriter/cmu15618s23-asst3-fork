@@ -32,6 +32,7 @@ public:
     }
     else{
       parentNode->isLeaf = 0;
+      parentNode->totalMass = 0; 
       //Insert children nodes
       Vec2 pivot = (bmin + bmax) * 0.5f;
       std::cout<<"pivot X: "<<pivot.x<<", Y: "<<pivot.y<<std::endl;
@@ -47,7 +48,10 @@ public:
       Vec2 botRightBmax = Vec2(bmax.x, pivot.y);
 
       std::vector<Particle> topLeftQ, topRightQ, botLeftQ, botRightQ;
+      Vec2 weightedPos = 0.0;
       for(auto &particle: particles){
+        parentNode->totalMass += particle.mass;
+        weightedPos += particle.position * particle.mass;
         std::cout<<"particle-x:"<<particle.position.x<<",y:"<<particle.position.y<<std::endl;
         if(particle.position.x >= topLeftBmin.x && particle.position.x <= topLeftBmax.x &&
              particle.position.y >= topLeftBmin.y && particle.position.y <= topLeftBmax.y){
@@ -71,6 +75,8 @@ public:
         }
       }
 
+      parentNode->centreofmass = weightedPos * (1/parentNode->totalMass);
+      std::cout<<"centre of mass - x:"<<parentNode->centreofmass.x<<", y:"<<parentNode->centreofmass.y<<std::endl;
       parentNode->children[2] =  std::make_unique<QuadTreeNode>(); 
       parentNode->children[2]->particles = topLeftQ;
       std::cout<<"Recursing into topLeft:"<<std::endl;

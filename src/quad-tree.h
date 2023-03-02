@@ -21,6 +21,10 @@ public:
   std::unique_ptr<QuadTreeNode> children[4];
 
   std::vector<Particle> particles;
+
+  Vec2 centreofmass;
+  
+  float totalMass;
 };
 
 // NOTE: Do not remove or edit funcations and variables in this class definition
