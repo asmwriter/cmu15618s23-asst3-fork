@@ -150,13 +150,30 @@ public:
     return quadTree;
   }
 
-  Vec2 computeForceWithQuadTree(const Particle& body, std::vector<Particle> &particles, std::unique_ptr<QuadTreeNode>& quadTreeNode){
+  Vec2 computeForceWithQuadTree(const Particle& body, std::vector<Particle> &particles, 
+            std::unique_ptr<QuadTreeNode>& quadTreeNode, StepParameters& params){
     Vec2 force = Vec2(0.0f, 0.0f);
+    float theta = 0.5;
     //Get the distance between centre of mass of this quadrant and the particle that you want to 
     float dist = (quadTreeNode->centreofmass - body.position).length();
+    float side_dist_ratio = (quadTreeNode->bmax.x - quadTreeNode->bmin.x)/dist;
     std::cout<<"particle id: "<< body.id<<",particle x:"<<body.position.x<<", y:"<<body.position.y<<std::endl;
-    std::cout<<"S/D:"<<(quadTreeNode->bmax.x - quadTreeNode->bmin.x)/dist<<std::endl;
+    std::cout<<"S/D:"<<side_dist_ratio<<std::endl;
     std::cout<<"centre of mass x="<<quadTreeNode->centreofmass.x<<",y="<<quadTreeNode->centreofmass.y<<std::endl;
+    /*
+    if(quadTreeNode->isLeaf){
+
+    }
+    else{
+      if( side_dist_ratio > theta){
+
+      }
+      else{
+          //Create a particle representing the sum of all masses
+          force = quadTreeNode->totalMass;
+      }
+    }
+    */
     return force;
   }
 
@@ -174,7 +191,7 @@ public:
       Vec2 force = Vec2(0.0f, 0.0f);
       //Calculate force on this particle due to other particles
       //Recursively compute force
-      force += computeForceWithQuadTree(body, particles, quadTree->root);
+      force += computeForceWithQuadTree(body, particles, quadTree->root, params);
     }
   }
 };
