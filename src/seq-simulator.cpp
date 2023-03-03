@@ -30,6 +30,7 @@ public:
       //Then this is the leaf node.
       parentNode->isLeaf = 1;
       Vec2 weightedPos = 0.0;
+      printf("leaf node");
       for(auto &particle: particles){
         parentNode->totalMass += particle.mass;
         weightedPos += particle.position * particle.mass;
@@ -144,12 +145,33 @@ public:
 
     return quadTree;
   }
+
+  Vec2 computeForceWithQuadTree(const Particle& body, std::vector<Particle> &particles, std::unique_ptr<QuadTreeNode> quadTreeNode){
+    Vec2 force = Vec2(0.0f, 0.0f);
+    //Get the distance between centre of mass of this quadrant and the particle that you want to 
+    float dist = (quadTreeNode->centreofmass - body.position).length();
+    std::cout<<"particle id: "<< body.id<<std::endl;
+    std::cout<<"centre of mass x="<<quadTreeNode->centreofmass.x<<",y="<<quadTreeNode->centreofmass.y<<std::endl;
+    return force;
+  }
+
   virtual void simulateStep(AccelerationStructure *accel,
                             std::vector<Particle> &particles,
                             std::vector<Particle> &newParticles,
                             StepParameters params) override {
     // TODO: implement sequential version of quad-tree accelerated n-body
     // simulation here, using quadTree as acceleration structure
+    std::unique_ptr<<AccelerationStructure> quadTree = buildAccelerationStructure(particles);
+    float theta = 0.5;
+    
+    for (int i = 0; i < (int)particles.size(); i++) {
+      auto body = particles[i];
+      printf("particle = %d, id", body.id);
+      Vec2 force = Vec2(0.0f, 0.0f);
+      //Calculate force on this particle due to other particles
+      //Recursively compute force
+      force += computeForceWithQuadTree(body, particles, quadTree->root)
+    }
   }
 };
 
