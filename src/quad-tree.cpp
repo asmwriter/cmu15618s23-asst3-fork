@@ -43,9 +43,7 @@ bool checkNode(QuadTreeNode *node, Vec2 bmin, Vec2 bmax) {
 
   const float delta = 1e-4f;
   if (node->isLeaf) { 
-    std::cout<<"isLeaf = 1 , size = "<<node->particles.size()<<std::endl;
     for (auto p : node->particles) {
-      
       if (p.position.x > bmax.x + delta || p.position.y > bmax.y + delta ||
           p.position.x < bmin.x - delta || p.position.y < bmin.y - delta) {
         std::cout << "particle: " << p.id << "(" << p.position.x << ", "
@@ -62,7 +60,6 @@ bool checkNode(QuadTreeNode *node, Vec2 bmin, Vec2 bmax) {
     Vec2 size = (bmax - bmin) * 0.5f;
     for (int i = 0; i < 4; i++) {
       Vec2 childBMin;
-      std::cout<<"checking node, i="<<i<<std::endl;
       childBMin.x = (i & 1) ? pivot.x : bmin.x;
       childBMin.y = ((i >> 1) & 1) ? pivot.y : bmin.y;
       if (!checkNode(node->children[i].get(), childBMin, childBMin + size)) {

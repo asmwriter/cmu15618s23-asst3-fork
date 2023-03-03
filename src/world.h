@@ -1,6 +1,7 @@
 #ifndef NBODY_WORLD_H
 #define NBODY_WORLD_H
 
+#include <stdio.h>
 #include <math.h>
 #include <memory>
 #include <vector>

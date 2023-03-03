@@ -175,20 +175,34 @@ public:
     std::cout<<"particle id: "<< body.id<<",particle x:"<<body.position.x<<", y:"<<body.position.y<<std::endl;
     std::cout<<"S/D:"<<side_dist_ratio<<std::endl;
     std::cout<<"centre of mass x="<<quadTreeNode->centreofmass.x<<",y="<<quadTreeNode->centreofmass.y<<std::endl;
-    /*
+    Particle particleInfl;
     if(quadTreeNode->isLeaf){
-
+      if(particles.size() == 0){
+        return force;
+      }
+      particleInfl = particles[0];
+      if(body.id == particleInfl.id){
+        return force;
+      }
+      force += computeForce(body, particleInfl, params.cullRadius);
+      
     }
     else{
       if( side_dist_ratio > theta){
-
+        //Recurse over all children nodes
+        for(int i=0; i<4; i++){
+          force += computeForceWithQuadTree(body, quadTreeNode->children[i]->particles, 
+            quadTreeNode->children[i], params);
+        } 
       }
       else{
-          //Create a particle representing the sum of all masses
-          force = quadTreeNode->totalMass;
+          //Create a particle representing the sum of all masses 
+          particleInfl.id = 0;
+          particleInfl.mass = quadTreeNode->totalMass;
+          particleInfl.position = quadTreeNode->centreofmass;
+          force += computeForce(body, particleInfl, params.cullRadius);
       }
     }
-    */
     return force;
   }
 
@@ -207,6 +221,8 @@ public:
       //Calculate force on this particle due to other particles
       //Recursively compute force
       force += computeForceWithQuadTree(body, particles, quadTree->root, params);
+      std::cout<<"Particle i:"<<i<<", force: x = "<<force.x<<", y = "<<force.y<<std::endl;
+      newParticles[i] = updateParticle(body, force, params.deltaTime);
     }
   }
 };

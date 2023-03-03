@@ -25,6 +25,7 @@ public:
         if ((pi.position - particles[j].position).length() < params.cullRadius)
           force += computeForce(pi, particles[j], params.cullRadius);
       }
+      printf("Particle i:%d, force: x = %f, y = %f \n", i, force.x, force.y);
       // update particle state using the computed force
       newParticles[i] = updateParticle(pi, force, params.deltaTime);
     }
