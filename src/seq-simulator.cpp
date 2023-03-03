@@ -24,15 +24,23 @@ public:
     std::cout<<"QuadTreeLeafSize = "<< QuadTreeLeafSize <<", particles size = "<<particles.size()<<std::endl;
     std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
     std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
+    parentNode->totalMass = 0; 
     //Check if the number of particles is more than QuadTreeLeafSize
     if(particles.size() <= QuadTreeLeafSize){
       //Then this is the leaf node.
       parentNode->isLeaf = 1;
+      Vec2 weightedPos = 0.0;
+      for(auto &particle: particles){
+        parentNode->totalMass += particle.mass;
+        weightedPos += particle.position * particle.mass;
+      }
+      parentNode->centreofmass = weightedPos * (1/parentNode->totalMass);
+      std::cout<<"centre of mass - x:"<<parentNode->centreofmass.x<<", y:"<<parentNode->centreofmass.y<<std::endl;
       return;
     }
     else{
       parentNode->isLeaf = 0;
-      parentNode->totalMass = 0; 
+      
       //Insert children nodes
       Vec2 pivot = (bmin + bmax) * 0.5f;
       std::cout<<"pivot X: "<<pivot.x<<", Y: "<<pivot.y<<std::endl;
