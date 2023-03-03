@@ -24,29 +24,14 @@ public:
     std::cout<<"QuadTreeLeafSize = "<< QuadTreeLeafSize <<", particles size = "<<particles.size()<<std::endl;
     std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
     std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
+    //Update Total mass and bounds for this quadrant
     parentNode->totalMass = 0; 
     parentNode->bmax = bmax;
     parentNode->bmin = bmin;
-    //Check if the number of particles is more than QuadTreeLeafSize
-    if(particles.size() <= QuadTreeLeafSize){
-      //Then this is the leaf node.
-      parentNode->isLeaf = 1;
-      Vec2 weightedPos = 0.0;
+    
+      parentNode->isLeaf = (particles.size() == 1) ? 1:0;
       
-      for(auto &particle: particles){
-        parentNode->totalMass += particle.mass;
-        weightedPos += particle.position * particle.mass;
-      }
-      parentNode->centreofmass = weightedPos * (1/parentNode->totalMass);
-      std::cout<<"centre of mass - x:"<<parentNode->centreofmass.x<<", y:"<<parentNode->centreofmass.y<<std::endl;
-      return;
-    }
-    else{
-      parentNode->isLeaf = 0;
-      
-      //Insert children nodes
       Vec2 pivot = (bmin + bmax) * 0.5f;
-      std::cout<<"pivot X: "<<pivot.x<<", Y: "<<pivot.y<<std::endl;
       Vec2 size = (bmax - bmin) * 0.5f;
 
       Vec2 topLeftBmin = Vec2(bmin.x, pivot.y);
@@ -59,55 +44,85 @@ public:
       Vec2 botRightBmax = Vec2(bmax.x, pivot.y);
 
       std::vector<Particle> topLeftQ, topRightQ, botLeftQ, botRightQ;
+
+      //Insert children nodes
       Vec2 weightedPos = 0.0;
       for(auto &particle: particles){
         parentNode->totalMass += particle.mass;
         weightedPos += particle.position * particle.mass;
-        std::cout<<"particle-x:"<<particle.position.x<<",y:"<<particle.position.y<<std::endl;
+        //std::cout<<"particle id:"<<particle.id<<", x:"<<particle.position.x<<", y:"<<particle.position.y<<std::endl;
         if(particle.position.x >= topLeftBmin.x && particle.position.x <= topLeftBmax.x &&
              particle.position.y >= topLeftBmin.y && particle.position.y <= topLeftBmax.y){
-              std::cout<<"top left"<<std::endl;
+              // std::cout<<"top left"<<std::endl;
               topLeftQ.push_back(particle);
         }
         if(particle.position.x >= topRightBmin.x && particle.position.x <= topRightBmax.x &&
              particle.position.y >= topRightBmin.y && particle.position.y <= topRightBmax.y){
-              std::cout<<"top right"<<std::endl;
+              // std::cout<<"top right"<<std::endl;
               topRightQ.push_back(particle);
         }
         if(particle.position.x >= botLeftBmin.x && particle.position.x <= botLeftBmax.x &&
              particle.position.y >= botLeftBmin.y && particle.position.y <= botLeftBmax.y){
-              std::cout<<"bottom left"<<std::endl;
+              // std::cout<<"bottom left"<<std::endl;
               botLeftQ.push_back(particle);
         }
         if(particle.position.x >= botRightBmin.x && particle.position.x <= botRightBmax.x &&
              particle.position.y >= botRightBmin.y && particle.position.y <= botRightBmax.y){
-              std::cout<<"bottom right"<<std::endl;
+              // std::cout<<"bottom right"<<std::endl;
               botRightQ.push_back(particle);
         }
       }
-
+      //Calculate centre of mass
       parentNode->centreofmass = weightedPos * (1/parentNode->totalMass);
-      std::cout<<"centre of mass - x:"<<parentNode->centreofmass.x<<", y:"<<parentNode->centreofmass.y<<std::endl;
-      parentNode->children[2] =  std::make_unique<QuadTreeNode>(); 
-      parentNode->children[2]->particles = topLeftQ;
-      std::cout<<"Recursing into topLeft:"<<std::endl;
-      helper(parentNode->children[2], topLeftQ, topLeftBmin, topLeftBmax, level+1);
+      // std::cout<<"centre of mass - x:"<<parentNode->centreofmass.x<<", y:"<<parentNode->centreofmass.y<<std::endl;
       
-      parentNode->children[3] =  std::make_unique<QuadTreeNode>(); 
-      parentNode->children[3]->particles = topRightQ;
-      std::cout<<"Recursing into topRight:"<<std::endl;
-      helper(parentNode->children[3], topRightQ, topRightBmin, topRightBmax, level+1);
-     
+      //Create children nodes
       parentNode->children[0] =  std::make_unique<QuadTreeNode>(); 
       parentNode->children[0]->particles = botLeftQ;
-      std::cout<<"Recursing into botLeft:"<<std::endl;
-      helper(parentNode->children[0], botLeftQ, botLeftBmin, botLeftBmax, level+1);
-    
+
+      
       parentNode->children[1] =  std::make_unique<QuadTreeNode>(); 
       parentNode->children[1]->particles = botRightQ;
-      std::cout<<"Recursing into botRight:"<<std::endl;
-      helper(parentNode->children[1], botRightQ, botRightBmin, botRightBmax, level+1);
-    }
+
+
+      parentNode->children[2] =  std::make_unique<QuadTreeNode>(); 
+      parentNode->children[2]->particles = topLeftQ;
+
+      parentNode->children[3] =  std::make_unique<QuadTreeNode>(); 
+      parentNode->children[3]->particles = topRightQ;  
+      
+      if(parentNode->isLeaf == 0){
+        if(botLeftQ.size() > 0){
+          // std::cout<<"Recursing into botLeft:"<<std::endl;
+          helper(parentNode->children[0], botLeftQ, botLeftBmin, botLeftBmax, level+1);
+        }
+        else{
+          parentNode->children[0]->isLeaf = true;
+        }
+        if(botRightQ.size() > 0){
+          // std::cout<<"Recursing into botRight:"<<std::endl;
+          helper(parentNode->children[1], botRightQ, botRightBmin, botRightBmax, level+1);
+        }
+        else{
+          parentNode->children[1]->isLeaf = true;
+        }
+        if(topLeftQ.size() > 0){
+          // std::cout<<"Recursing into topLeft:"<<std::endl;
+          helper(parentNode->children[2], topLeftQ, topLeftBmin, topLeftBmax, level+1);
+        }
+        else{
+          parentNode->children[2]->isLeaf = true;
+        }
+        if(topRightQ.size() > 0){
+          // std::cout<<"Recursing into topRight:"<<std::endl;
+          helper(parentNode->children[3], topRightQ, topRightBmin, topRightBmax, level+1);
+        }
+        else{
+          parentNode->children[3]->isLeaf = true;
+        }
+      }
+      
+    std::cout<<"Level: "<<level<<" done"<<std::endl;
   }
 
   std::unique_ptr<QuadTreeNode> buildQuadTree(std::vector<Particle> &particles,
