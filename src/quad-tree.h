@@ -23,7 +23,9 @@ public:
   std::vector<Particle> particles;
 
   Vec2 centreofmass;
-  
+
+  Vec2 bmin, bmax;
+
   float totalMass;
 };
 

@@ -25,6 +25,8 @@ public:
     std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
     std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
     parentNode->totalMass = 0; 
+    parentNode->bmax = bmax;
+    parentNode->bmin = bmin;
     //Check if the number of particles is more than QuadTreeLeafSize
     if(particles.size() <= QuadTreeLeafSize){
       //Then this is the leaf node.
@@ -152,7 +154,8 @@ public:
     Vec2 force = Vec2(0.0f, 0.0f);
     //Get the distance between centre of mass of this quadrant and the particle that you want to 
     float dist = (quadTreeNode->centreofmass - body.position).length();
-    std::cout<<"particle id: "<< body.id<<"particle x:"<<body.position.x<<", y:"<<body.position.y<<std::endl;
+    std::cout<<"particle id: "<< body.id<<",particle x:"<<body.position.x<<", y:"<<body.position.y<<std::endl;
+    std::cout<<"S/D:"<<(quadTreeNode->bmax.x - quadTreeNode->bmin.x)/dist<<std::endl;
     std::cout<<"centre of mass x="<<quadTreeNode->centreofmass.x<<",y="<<quadTreeNode->centreofmass.y<<std::endl;
     return force;
   }
