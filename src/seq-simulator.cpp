@@ -161,7 +161,7 @@ public:
                             StepParameters params) override {
     // TODO: implement sequential version of quad-tree accelerated n-body
     // simulation here, using quadTree as acceleration structure
-    std::unique_ptr<<AccelerationStructure> quadTree = buildAccelerationStructure(particles);
+    QuadTree* quadTree = dynamic_cast<QuadTree *>(buildAccelerationStructure(particles));
     float theta = 0.5;
     
     for (int i = 0; i < (int)particles.size(); i++) {
