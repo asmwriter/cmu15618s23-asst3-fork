@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
+#define THETA 0.0
 // TASK 1
 
 // NOTE: You may modify any of the contents of this file, but preserve all
@@ -168,13 +169,13 @@ public:
   Vec2 computeForceWithQuadTree(const Particle& body, std::vector<Particle> &particles, 
             std::unique_ptr<QuadTreeNode>& quadTreeNode, StepParameters& params){
     Vec2 force = Vec2(0.0f, 0.0f);
-    float theta = 0.5;
+    float theta = THETA;
     //Get the distance between centre of mass of this quadrant and the particle that you want to 
     float dist = (quadTreeNode->centreofmass - body.position).length();
     float side_dist_ratio = (quadTreeNode->bmax.x - quadTreeNode->bmin.x)/dist;
-    std::cout<<"particle id: "<< body.id<<",particle x:"<<body.position.x<<", y:"<<body.position.y<<std::endl;
-    std::cout<<"S/D:"<<side_dist_ratio<<std::endl;
-    std::cout<<"centre of mass x="<<quadTreeNode->centreofmass.x<<",y="<<quadTreeNode->centreofmass.y<<std::endl;
+    //std::cout<<"particle id: "<< body.id<<",particle x:"<<body.position.x<<", y:"<<body.position.y<<std::endl;
+    //std::cout<<"S/D:"<<side_dist_ratio<<std::endl;
+    //std::cout<<"centre of mass x="<<quadTreeNode->centreofmass.x<<",y="<<quadTreeNode->centreofmass.y<<std::endl;
     Particle particleInfl;
     if(quadTreeNode->isLeaf){
       if(particles.size() == 0){
@@ -213,7 +214,7 @@ public:
     // TODO: implement sequential version of quad-tree accelerated n-body
     // simulation here, using quadTree as acceleration structure
     QuadTree* quadTree = dynamic_cast<QuadTree *>(accel);
-    float theta = 0.5;
+    float theta = THETA;
     
     for (int i = 0; i < (int)particles.size(); i++) {
       auto body = particles[i];
