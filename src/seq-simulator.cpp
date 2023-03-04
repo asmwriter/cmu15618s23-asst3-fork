@@ -21,10 +21,10 @@ public:
   }
 
   void helper(std::unique_ptr<QuadTreeNode>& parentNode, std::vector<Particle> &particles, Vec2 bmin, Vec2 bmax, int level){
-    std::cout<<"Level:"<<level<<std::endl;
-    std::cout<<"QuadTreeLeafSize = "<< QuadTreeLeafSize <<", particles size = "<<particles.size()<<std::endl;
-    std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
-    std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
+    // std::cout<<"Level:"<<level<<std::endl;
+    // std::cout<<"QuadTreeLeafSize = "<< QuadTreeLeafSize <<", particles size = "<<particles.size()<<std::endl;
+    // std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
+    // std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
     //Update Total mass and bounds for this quadrant
     parentNode->totalMass = 0; 
     parentNode->bmax = bmax;
@@ -123,7 +123,7 @@ public:
         }
       }
       
-    std::cout<<"Level: "<<level<<" done"<<std::endl;
+    // std::cout<<"Level: "<<level<<" done"<<std::endl;
   }
 
   std::unique_ptr<QuadTreeNode> buildQuadTree(std::vector<Particle> &particles,
@@ -140,7 +140,7 @@ public:
   buildAccelerationStructure(std::vector<Particle> &particles) {
     // build quad-tree
     auto quadTree = std::make_unique<QuadTree>();
-    std::cout<<"In buildAccelerationStructure"<<std::endl;
+    // std::cout<<"In buildAccelerationStructure"<<std::endl;
     // find bounds
     Vec2 bmin(1e30f, 1e30f);
     Vec2 bmax(-1e30f, -1e30f);
@@ -151,9 +151,9 @@ public:
       bmax.x = fmaxf(bmax.x, p.position.x);
       bmax.y = fmaxf(bmax.y, p.position.y);
     }
-    std::cout<<"particles count:"<<particles.size()<<std::endl;
-    std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
-    std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
+    // std::cout<<"particles count:"<<particles.size()<<std::endl;
+    // std::cout<<"Bbox X min: "<<bmin.x<<", max: "<<bmax.x<<std::endl;
+    // std::cout<<"Bbox Y min: "<<bmin.y<<", max: "<<bmax.y<<std::endl;
     quadTree->bmin = bmin;
     quadTree->bmax = bmax;
 
@@ -222,7 +222,7 @@ public:
       //Calculate force on this particle due to other particles
       //Recursively compute force
       force += computeForceWithQuadTree(body, particles, quadTree->root, params);
-      std::cout<<"Particle i:"<<i<<", force: x = "<<force.x<<", y = "<<force.y<<std::endl;
+      // std::cout<<"Particle i:"<<i<<", force: x = "<<force.x<<", y = "<<force.y<<std::endl;
       newParticles[i] = updateParticle(body, force, params.deltaTime);
     }
   }
